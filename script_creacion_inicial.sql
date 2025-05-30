@@ -21,6 +21,8 @@ DROP TABLE IF EXISTS GDDIENTOS.Sucursal;
 DROP TABLE IF EXISTS GDDIENTOS.Cliente;
 DROP TABLE IF EXISTS GDDIENTOS.Localidad;
 DROP TABLE IF EXISTS GDDIENTOS.Provincia;
+GO
+
 DROP SCHEMA IF EXISTS GDDIENTOS;
 GO
 
@@ -28,19 +30,19 @@ CREATE SCHEMA GDDIENTOS;
 GO
 
 CREATE TABLE GDDIENTOS.Provincia (
-    provincia_codigo BIGINT PRIMARY KEY,
+    provincia_codigo BIGINT IDENTITY(1,1) PRIMARY KEY,
     provincia_nombre NVARCHAR(255)
 );
 
 CREATE TABLE GDDIENTOS.Localidad (
-    localidad_codigo BIGINT PRIMARY KEY,
+    localidad_codigo BIGINT IDENTITY(1,1) PRIMARY KEY,
     localidad_nombre NVARCHAR(255),
 	localidad_provincia BIGINT,
 	FOREIGN KEY (localidad_provincia) REFERENCES GDDIENTOS.Provincia(provincia_codigo)
 );
 
 CREATE TABLE GDDIENTOS.Cliente (
-    cliente_codigo BIGINT PRIMARY KEY,
+    cliente_codigo BIGINT IDENTITY(1,1) PRIMARY KEY,
     cliente_dni BIGINT,
     cliente_nombre NVARCHAR(255),
     cliente_apellido NVARCHAR(255),
@@ -55,7 +57,7 @@ CREATE TABLE GDDIENTOS.Cliente (
 );
 
 CREATE TABLE GDDIENTOS.Sucursal (
-    sucursal_codigo BIGINT PRIMARY KEY,
+    sucursal_codigo BIGINT IDENTITY(1,1) PRIMARY KEY,
     sucursal_provincia BIGINT,
     sucursal_localidad BIGINT,
     sucursal_direccion NVARCHAR(255),
@@ -66,12 +68,12 @@ CREATE TABLE GDDIENTOS.Sucursal (
 );
 
 CREATE TABLE GDDIENTOS.Estado (
-    estado_numero BIGINT PRIMARY KEY,
+    estado_numero BIGINT IDENTITY(1,1) PRIMARY KEY,
     estado_tipo NVARCHAR(255)
 );
 
 CREATE TABLE GDDIENTOS.Pedido (
-    pedido_numero DECIMAL(18,0) PRIMARY KEY,
+    pedido_numero DECIMAL(18,0) IDENTITY(1,1) PRIMARY KEY,
     pedido_sucursal BIGINT,
     pedido_cliente BIGINT,
     pedido_fecha DATETIME2(6),
@@ -90,7 +92,7 @@ CREATE TABLE GDDIENTOS.Pedido_Cancelacion (
 );
 
 CREATE TABLE GDDIENTOS.Factura (
-    factura_numero BIGINT PRIMARY KEY,
+    factura_numero BIGINT IDENTITY(1,1) PRIMARY KEY,
     factura_cliente BIGINT,
     factura_sucursal BIGINT,
     factura_fecha DATETIME2(6),
@@ -100,7 +102,7 @@ CREATE TABLE GDDIENTOS.Factura (
 );
 
 CREATE TABLE GDDIENTOS.Envio (
-    envio_numero DECIMAL(18,0) PRIMARY KEY,
+    envio_numero DECIMAL(18,0) IDENTITY(1,1) PRIMARY KEY,
     envio_factura_numero BIGINT,
     envio_fecha_programado DATETIME2(6),
     envio_fecha_entrega DATETIME2(6),
@@ -111,7 +113,7 @@ CREATE TABLE GDDIENTOS.Envio (
 );
 
 CREATE TABLE GDDIENTOS.Medida (
-    medida_codigo BIGINT PRIMARY KEY,
+    medida_codigo BIGINT IDENTITY(1,1) PRIMARY KEY,
     medida_ancho DECIMAL(18,2),
     medida_alto DECIMAL(18,2),
     medida_profundidad DECIMAL(18,2),
@@ -119,14 +121,14 @@ CREATE TABLE GDDIENTOS.Medida (
 );
 
 CREATE TABLE GDDIENTOS.Sillon_Modelo (
-    sillon_modelo_codigo BIGINT PRIMARY KEY,
+    sillon_modelo_codigo BIGINT IDENTITY(1,1) PRIMARY KEY,
     sillon_modelo NVARCHAR(255),
     sillon_modelo_descripcion NVARCHAR(255),
     sillon_modelo_precio DECIMAL(18,2)
 );
 
 CREATE TABLE GDDIENTOS.Sillon (
-    sillon_codigo BIGINT PRIMARY KEY,
+    sillon_codigo BIGINT IDENTITY(1,1) PRIMARY KEY,
     sillon_modelo BIGINT,
 	sillon_modelo_precio DECIMAL(18,2),
     sillon_medida BIGINT,
@@ -136,7 +138,7 @@ CREATE TABLE GDDIENTOS.Sillon (
 );
 
 CREATE TABLE GDDIENTOS.Item_Pedido (
-    item_pedido_codigo BIGINT PRIMARY KEY,
+    item_pedido_codigo BIGINT IDENTITY(1,1) PRIMARY KEY,
     item_pedido_codigo_pedido DECIMAL(18,0),
     item_pedido_sillon BIGINT,
     item_pedido_precio_unitario DECIMAL(18,2),
@@ -147,7 +149,7 @@ CREATE TABLE GDDIENTOS.Item_Pedido (
 );
 
 CREATE TABLE GDDIENTOS.Item_Factura (
-    item_factura_codigo BIGINT PRIMARY KEY,
+    item_factura_codigo BIGINT IDENTITY(1,1) PRIMARY KEY,
     item_factura_item_pedido_codigo BIGINT,
     item_factura_codigo_factura BIGINT,
     item_factura_precio_unitario DECIMAL(18,2),
@@ -158,7 +160,7 @@ CREATE TABLE GDDIENTOS.Item_Factura (
 );
 
 CREATE TABLE gddientos.Proveedor (
-    proveedor_codigo BIGINT PRIMARY KEY,
+    proveedor_codigo BIGINT IDENTITY(1,1) PRIMARY KEY,
     proveedor_cuit NVARCHAR(255),
     proveedor_razonSocial NVARCHAR(255),
     proveedor_direccion NVARCHAR(255),
@@ -171,7 +173,7 @@ CREATE TABLE gddientos.Proveedor (
 );
 
 CREATE TABLE GDDIENTOS.Compra (
-    compra_numero DECIMAL(18,0) PRIMARY KEY,
+    compra_numero DECIMAL(18,0) IDENTITY(1,1) PRIMARY KEY,
     compra_sucursal BIGINT,
     compra_proveedor BIGINT,
     compra_fecha DATETIME2(6),
@@ -181,12 +183,12 @@ CREATE TABLE GDDIENTOS.Compra (
 );
 
 CREATE TABLE GDDIENTOS.Tipo_Material (
-    tipo_material_codigo BIGINT PRIMARY KEY,
+    tipo_material_codigo BIGINT IDENTITY(1,1) PRIMARY KEY,
     tipo_material_nombre NVARCHAR(255)
 );
 
 CREATE TABLE GDDIENTOS.Material (
-    material_codigo BIGINT PRIMARY KEY,
+    material_codigo BIGINT IDENTITY(1,1) PRIMARY KEY,
     material_tipo BIGINT,
     material_nombre NVARCHAR(255),
     material_descripcion NVARCHAR(255),
@@ -195,7 +197,7 @@ CREATE TABLE GDDIENTOS.Material (
 );
 
 CREATE TABLE GDDIENTOS.Item_Compra (
-    item_compra_codigo BIGINT PRIMARY KEY,
+    item_compra_codigo BIGINT IDENTITY(1,1) PRIMARY KEY,
     item_compra_codigo_compra DECIMAL(18,0),
     item_compra_material BIGINT,
     item_compra_precio_unitario DECIMAL(18,2),
@@ -233,3 +235,75 @@ CREATE TABLE GDDIENTOS.Relleno (
     relleno_densidad DECIMAL(38,2),
     FOREIGN KEY (relleno_material_codigo) REFERENCES GDDIENTOS.Material(material_codigo)
 );
+GO
+
+PRINT '[TRACE] INSERT INTO Provincia';
+GO
+
+INSERT INTO GDDIENTOS.Provincia(provincia_nombre)
+SELECT sucursal_provincia FROM gd_esquema.Maestra
+GROUP BY sucursal_provincia
+HAVING sucursal_provincia IS NOT NULL
+	AND sucursal_provincia NOT IN (
+		SELECT provincia_nombre FROM GDDIENTOS.Provincia
+	)
+;
+
+INSERT INTO GDDIENTOS.Provincia(provincia_nombre)
+SELECT cliente_provincia FROM gd_esquema.Maestra
+GROUP BY cliente_provincia
+HAVING cliente_provincia IS NOT NULL
+	AND cliente_provincia NOT IN (
+		SELECT provincia_nombre FROM GDDIENTOS.Provincia
+	)
+;
+
+INSERT INTO GDDIENTOS.Provincia(provincia_nombre)
+SELECT proveedor_provincia FROM gd_esquema.Maestra
+GROUP BY proveedor_provincia
+HAVING proveedor_provincia IS NOT NULL
+	AND proveedor_provincia NOT IN (
+		SELECT provincia_nombre FROM GDDIENTOS.Provincia
+	)
+;
+GO
+
+PRINT '[TRACE] INSERT INTO Provincia END';
+PRINT '[TRACE] INSERT INTO Localidad';
+GO
+
+INSERT INTO GDDIENTOS.Localidad(localidad_nombre, localidad_provincia)
+SELECT sucursal_localidad, provincia_codigo FROM gd_esquema.Maestra
+JOIN GDDIENTOS.Provincia ON sucursal_provincia = provincia_nombre
+GROUP BY sucursal_localidad, provincia_codigo
+HAVING sucursal_localidad IS NOT NULL
+	AND sucursal_localidad NOT IN (
+		SELECT localidad_nombre FROM GDDIENTOS.Localidad
+		WHERE localidad_provincia = provincia_codigo
+	)
+;
+
+INSERT INTO GDDIENTOS.Localidad(localidad_nombre, localidad_provincia)
+SELECT cliente_localidad, provincia_codigo FROM gd_esquema.Maestra
+JOIN GDDIENTOS.Provincia ON cliente_provincia = provincia_nombre
+GROUP BY cliente_localidad, provincia_codigo
+HAVING cliente_localidad IS NOT NULL
+	AND cliente_localidad NOT IN (
+		SELECT localidad_nombre FROM GDDIENTOS.Localidad
+		WHERE localidad_provincia = provincia_codigo
+	)
+;
+
+INSERT INTO GDDIENTOS.Localidad(localidad_nombre, localidad_provincia)
+SELECT proveedor_localidad, provincia_codigo FROM gd_esquema.Maestra
+JOIN GDDIENTOS.Provincia ON proveedor_provincia = provincia_nombre
+GROUP BY proveedor_localidad, provincia_codigo
+HAVING proveedor_localidad IS NOT NULL
+	AND proveedor_localidad NOT IN (
+		SELECT localidad_nombre FROM GDDIENTOS.Localidad
+		WHERE localidad_provincia = provincia_codigo
+	)
+;
+GO
+
+PRINT '[TRACE] INSERT INTO Localidad END';
