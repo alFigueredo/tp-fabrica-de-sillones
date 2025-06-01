@@ -31,54 +31,54 @@ GO
 
 CREATE TABLE GDDIENTOS.Provincia (
     provincia_codigo BIGINT IDENTITY(1,1) PRIMARY KEY,
-    provincia_nombre NVARCHAR(255)
+    provincia_nombre NVARCHAR(255) NOT NULL
 );
 
 CREATE TABLE GDDIENTOS.Localidad (
     localidad_codigo BIGINT IDENTITY(1,1) PRIMARY KEY,
-    localidad_nombre NVARCHAR(255),
-	localidad_provincia BIGINT,
+    localidad_nombre NVARCHAR(255) NOT NULL,
+	localidad_provincia BIGINT NOT NULL,
 	FOREIGN KEY (localidad_provincia) REFERENCES GDDIENTOS.Provincia(provincia_codigo)
 );
 
 CREATE TABLE GDDIENTOS.Cliente (
     cliente_codigo BIGINT IDENTITY(1,1) PRIMARY KEY,
-    cliente_dni BIGINT,
-    cliente_nombre NVARCHAR(255),
-    cliente_apellido NVARCHAR(255),
-    cliente_fechaNacimiento DATETIME2,
-    cliente_mail NVARCHAR(255),
-    cliente_direccion NVARCHAR(255),
-    cliente_telefono NVARCHAR(255),
-    cliente_provincia BIGINT,
-    cliente_localidad BIGINT,
+    cliente_dni BIGINT NOT NULL,
+    cliente_nombre NVARCHAR(255) NOT NULL,
+    cliente_apellido NVARCHAR(255) NOT NULL,
+    cliente_fechaNacimiento DATETIME2 NOT NULL,
+    cliente_mail NVARCHAR(255) NOT NULL,
+    cliente_direccion NVARCHAR(255) NOT NULL,
+    cliente_telefono NVARCHAR(255) NOT NULL,
+    cliente_provincia BIGINT NOT NULL,
+    cliente_localidad BIGINT NOT NULL,
     FOREIGN KEY (cliente_provincia) REFERENCES GDDIENTOS.Provincia(provincia_codigo),
     FOREIGN KEY (cliente_localidad) REFERENCES GDDIENTOS.Localidad(localidad_codigo)
 );
 
 CREATE TABLE GDDIENTOS.Sucursal (
     sucursal_codigo BIGINT PRIMARY KEY,
-    sucursal_provincia BIGINT,
-    sucursal_localidad BIGINT,
-    sucursal_direccion NVARCHAR(255),
-    sucursal_telefono NVARCHAR(255),
-    sucursal_mail NVARCHAR(255),
+    sucursal_provincia BIGINT NOT NULL,
+    sucursal_localidad BIGINT NOT NULL,
+    sucursal_direccion NVARCHAR(255) NOT NULL,
+    sucursal_telefono NVARCHAR(255) NOT NULL,
+    sucursal_mail NVARCHAR(255) NOT NULL,
     FOREIGN KEY (sucursal_provincia) REFERENCES GDDIENTOS.Provincia(provincia_codigo),
     FOREIGN KEY (sucursal_localidad) REFERENCES GDDIENTOS.Localidad(localidad_codigo)
 );
 
 CREATE TABLE GDDIENTOS.Estado (
     estado_numero BIGINT IDENTITY(1,1) PRIMARY KEY,
-    estado_tipo NVARCHAR(255)
+    estado_tipo NVARCHAR(255) NOT NULL
 );
 
 CREATE TABLE GDDIENTOS.Pedido (
     pedido_numero DECIMAL(18,0) PRIMARY KEY,
-    pedido_sucursal BIGINT,
-    pedido_cliente BIGINT,
-    pedido_fecha DATETIME2(6),
-    pedido_total DECIMAL(18,2),
-    pedido_estado BIGINT,
+    pedido_sucursal BIGINT NOT NULL,
+    pedido_cliente BIGINT NOT NULL,
+    pedido_fecha DATETIME2(6) NOT NULL,
+    pedido_total DECIMAL(18,2) NOT NULL,
+    pedido_estado BIGINT NOT NULL,
     FOREIGN KEY (pedido_sucursal) REFERENCES GDDIENTOS.Sucursal(sucursal_codigo),
     FOREIGN KEY (pedido_cliente) REFERENCES GDDIENTOS.Cliente(cliente_codigo),
 	FOREIGN KEY (pedido_estado) REFERENCES GDDIENTOS.Estado(estado_numero)
@@ -86,131 +86,131 @@ CREATE TABLE GDDIENTOS.Pedido (
 
 CREATE TABLE GDDIENTOS.Pedido_Cancelacion (
     pedido_cancelacion_pedido DECIMAL(18,0) PRIMARY KEY,
-    pedido_cancelacion_fecha DATETIME2(6),
-    pedido_cancelacion_motivo NVARCHAR(255),
+    pedido_cancelacion_fecha DATETIME2(6) NOT NULL,
+    pedido_cancelacion_motivo NVARCHAR(255) NOT NULL,
     FOREIGN KEY (pedido_cancelacion_pedido) REFERENCES GDDIENTOS.Pedido(pedido_numero)
 );
 
 CREATE TABLE GDDIENTOS.Factura (
     factura_numero BIGINT PRIMARY KEY,
-    factura_cliente BIGINT,
-    factura_sucursal BIGINT,
-    factura_fecha DATETIME2(6),
-    factura_total DECIMAL(38,2),
+    factura_cliente BIGINT NOT NULL,
+    factura_sucursal BIGINT NOT NULL,
+    factura_fecha DATETIME2(6) NOT NULL,
+    factura_total DECIMAL(38,2) NOT NULL,
     FOREIGN KEY (factura_cliente) REFERENCES GDDIENTOS.Cliente(cliente_codigo),
     FOREIGN KEY (factura_sucursal) REFERENCES GDDIENTOS.Sucursal(sucursal_codigo)
 );
 
 CREATE TABLE GDDIENTOS.Envio (
     envio_numero DECIMAL(18,0) PRIMARY KEY,
-    envio_factura_numero BIGINT,
-    envio_fecha_programada DATETIME2(6),
-    envio_fecha_entrega DATETIME2(6),
-    envio_importe_traslado DECIMAL(18,2),
-    envio_importe_subida DECIMAL(18,2),
-    envio_total DECIMAL(18,2),
+    envio_factura_numero BIGINT NOT NULL,
+    envio_fecha_programada DATETIME2(6) NOT NULL,
+    envio_fecha_entrega DATETIME2(6) NOT NULL,
+    envio_importe_traslado DECIMAL(18,2) NOT NULL,
+    envio_importe_subida DECIMAL(18,2) NOT NULL,
+    envio_total DECIMAL(18,2) NOT NULL,
     FOREIGN KEY (envio_factura_numero) REFERENCES GDDIENTOS.Factura(factura_numero)
 );
 
 CREATE TABLE GDDIENTOS.Medida (
     medida_codigo BIGINT IDENTITY(1,1) PRIMARY KEY,
-    medida_ancho DECIMAL(18,2),
-    medida_alto DECIMAL(18,2),
-    medida_profundidad DECIMAL(18,2),
-    medida_precio DECIMAL(18,2)
+    medida_ancho DECIMAL(18,2) NOT NULL,
+    medida_alto DECIMAL(18,2) NOT NULL,
+    medida_profundidad DECIMAL(18,2) NOT NULL,
+    medida_precio DECIMAL(18,2) NOT NULL
 );
 
 CREATE TABLE GDDIENTOS.Sillon_Modelo (
     sillon_modelo_codigo BIGINT PRIMARY KEY,
-    sillon_modelo NVARCHAR(255),
-    sillon_modelo_descripcion NVARCHAR(255),
-    sillon_modelo_precio DECIMAL(18,2)
+    sillon_modelo NVARCHAR(255) NOT NULL,
+    sillon_modelo_descripcion NVARCHAR(255) NOT NULL,
+    sillon_modelo_precio DECIMAL(18,2) NOT NULL
 );
 
 CREATE TABLE GDDIENTOS.Sillon (
     sillon_codigo BIGINT PRIMARY KEY,
-    sillon_modelo BIGINT,
-	sillon_modelo_precio DECIMAL(18,2),
-    sillon_medida BIGINT,
-	sillon_medida_precio DECIMAL(18,2)
+    sillon_modelo BIGINT NOT NULL,
+	sillon_modelo_precio DECIMAL(18,2) NOT NULL,
+    sillon_medida BIGINT NOT NULL,
+	sillon_medida_precio DECIMAL(18,2) NOT NULL
     FOREIGN KEY (sillon_modelo) REFERENCES GDDIENTOS.Sillon_Modelo(sillon_modelo_codigo),
     FOREIGN KEY (sillon_medida) REFERENCES GDDIENTOS.Medida(medida_codigo)
 );
 
 CREATE TABLE GDDIENTOS.Item_Pedido (
     item_pedido_codigo BIGINT IDENTITY(1,1) PRIMARY KEY,
-    item_pedido_codigo_pedido DECIMAL(18,0),
-    item_pedido_sillon BIGINT,
-    item_pedido_precio_unitario DECIMAL(18,2),
-    item_pedido_cantidad BIGINT,
-    item_pedido_subtotal DECIMAL(18,2),
+    item_pedido_codigo_pedido DECIMAL(18,0) NOT NULL,
+    item_pedido_sillon BIGINT NOT NULL,
+    item_pedido_precio_unitario DECIMAL(18,2) NOT NULL,
+    item_pedido_cantidad BIGINT NOT NULL,
+    item_pedido_subtotal DECIMAL(18,2) NOT NULL,
     FOREIGN KEY (item_pedido_codigo_pedido) REFERENCES GDDIENTOS.Pedido(pedido_numero),
 	FOREIGN KEY (item_pedido_sillon) REFERENCES GDDIENTOS.Sillon(sillon_codigo)
 );
 
 CREATE TABLE GDDIENTOS.Item_Factura (
     item_factura_codigo BIGINT IDENTITY(1,1) PRIMARY KEY,
-    item_factura_item_pedido_codigo BIGINT,
-    item_factura_codigo_factura BIGINT,
-    item_factura_precio_unitario DECIMAL(18,2),
-    item_factura_cantidad DECIMAL(18,0),
-    item_factura_subtotal DECIMAL(18,2),
+    item_factura_item_pedido_codigo BIGINT NOT NULL,
+    item_factura_codigo_factura BIGINT NOT NULL,
+    item_factura_precio_unitario DECIMAL(18,2) NOT NULL,
+    item_factura_cantidad DECIMAL(18,0) NOT NULL,
+    item_factura_subtotal DECIMAL(18,2) NOT NULL,
     FOREIGN KEY (item_factura_item_pedido_codigo) REFERENCES GDDIENTOS.Item_Pedido(item_pedido_codigo),
     FOREIGN KEY (item_factura_codigo_factura) REFERENCES GDDIENTOS.Factura(factura_numero)
 );
 
 CREATE TABLE GDDIENTOS.Proveedor (
     proveedor_codigo BIGINT IDENTITY(1,1) PRIMARY KEY,
-    proveedor_cuit NVARCHAR(255),
-    proveedor_razonSocial NVARCHAR(255),
-    proveedor_direccion NVARCHAR(255),
-    proveedor_provincia BIGINT,
-    proveedor_localidad BIGINT,
-    proveedor_mail NVARCHAR(255),
-    proveedor_telefono NVARCHAR(255),
+    proveedor_cuit NVARCHAR(255) NOT NULL,
+    proveedor_razonSocial NVARCHAR(255) NOT NULL,
+    proveedor_direccion NVARCHAR(255) NOT NULL,
+    proveedor_provincia BIGINT NOT NULL,
+    proveedor_localidad BIGINT NOT NULL,
+    proveedor_mail NVARCHAR(255) NOT NULL,
+    proveedor_telefono NVARCHAR(255) NOT NULL,
     FOREIGN KEY (proveedor_provincia) REFERENCES GDDIENTOS.Provincia(provincia_codigo),
     FOREIGN KEY (proveedor_localidad) REFERENCES GDDIENTOS.Localidad(localidad_codigo)
 );
 
 CREATE TABLE GDDIENTOS.Compra (
     compra_numero DECIMAL(18,0) PRIMARY KEY,
-    compra_sucursal BIGINT,
-    compra_proveedor BIGINT,
-    compra_fecha DATETIME2(6),
-    compra_total DECIMAL(18,2),
+    compra_sucursal BIGINT NOT NULL,
+    compra_proveedor BIGINT NOT NULL,
+    compra_fecha DATETIME2(6) NOT NULL,
+    compra_total DECIMAL(18,2) NOT NULL,
     FOREIGN KEY (compra_sucursal) REFERENCES GDDIENTOS.Sucursal(sucursal_codigo),
     FOREIGN KEY (compra_proveedor) REFERENCES GDDIENTOS.Proveedor(proveedor_codigo)
 );
 
 CREATE TABLE GDDIENTOS.Tipo_Material (
     tipo_material_codigo BIGINT IDENTITY(1,1) PRIMARY KEY,
-    tipo_material_nombre NVARCHAR(255)
+    tipo_material_nombre NVARCHAR(255) NOT NULL
 );
 
 CREATE TABLE GDDIENTOS.Material (
     material_codigo BIGINT IDENTITY(1,1) PRIMARY KEY,
-    material_tipo BIGINT,
-    material_nombre NVARCHAR(255),
-    material_descripcion NVARCHAR(255),
-    material_precio DECIMAL(38,2),
+    material_tipo BIGINT NOT NULL,
+    material_nombre NVARCHAR(255) NOT NULL,
+    material_descripcion NVARCHAR(255) NOT NULL,
+    material_precio DECIMAL(38,2) NOT NULL,
     FOREIGN KEY (material_tipo) REFERENCES GDDIENTOS.Tipo_Material(tipo_material_codigo)
 );
 
 CREATE TABLE GDDIENTOS.Item_Compra (
     item_compra_codigo BIGINT IDENTITY(1,1) PRIMARY KEY,
-    item_compra_codigo_compra DECIMAL(18,0),
-    item_compra_material BIGINT,
-    item_compra_precio_unitario DECIMAL(18,2),
-    item_compra_cantidad DECIMAL(18,0),
-    item_compra_subtotal DECIMAL(18,2),
+    item_compra_codigo_compra DECIMAL(18,0) NOT NULL,
+    item_compra_material BIGINT NOT NULL,
+    item_compra_precio_unitario DECIMAL(18,2) NOT NULL,
+    item_compra_cantidad DECIMAL(18,0) NOT NULL,
+    item_compra_subtotal DECIMAL(18,2) NOT NULL,
     FOREIGN KEY (item_compra_codigo_compra) REFERENCES GDDIENTOS.Compra(compra_numero),
     FOREIGN KEY (item_compra_material) REFERENCES GDDIENTOS.Material(material_codigo)
 );
 
 CREATE TABLE GDDIENTOS.Sillon_Material (
-    sillon_material_codigo_sillon BIGINT,
-    sillon_material_codigo_material BIGINT,
-    sillon_material_precio DECIMAL(38,2),
+    sillon_material_codigo_sillon BIGINT NOT NULL,
+    sillon_material_codigo_material BIGINT NOT NULL,
+    sillon_material_precio DECIMAL(38,2) NOT NULL,
     PRIMARY KEY (sillon_material_codigo_sillon, sillon_material_codigo_material),
     FOREIGN KEY (sillon_material_codigo_sillon) REFERENCES GDDIENTOS.Sillon(sillon_codigo),
     FOREIGN KEY (sillon_material_codigo_material) REFERENCES GDDIENTOS.Material(material_codigo)
@@ -218,21 +218,21 @@ CREATE TABLE GDDIENTOS.Sillon_Material (
 
 CREATE TABLE GDDIENTOS.Tela (
     tela_material_codigo BIGINT PRIMARY KEY,
-    tela_color NVARCHAR(255),
-    tela_textura NVARCHAR(255),
+    tela_color NVARCHAR(255) NOT NULL,
+    tela_textura NVARCHAR(255) NOT NULL,
     FOREIGN KEY (tela_material_codigo) REFERENCES GDDIENTOS.Material(material_codigo)
 );
 
 CREATE TABLE GDDIENTOS.Madera (
     madera_material_codigo BIGINT PRIMARY KEY,
-    madera_color NVARCHAR(255),
-    madera_dureza NVARCHAR(255),
+    madera_color NVARCHAR(255) NOT NULL,
+    madera_dureza NVARCHAR(255) NOT NULL,
     FOREIGN KEY (madera_material_codigo) REFERENCES GDDIENTOS.Material(material_codigo)
 );
 
 CREATE TABLE GDDIENTOS.Relleno (
     relleno_material_codigo BIGINT PRIMARY KEY,
-    relleno_densidad DECIMAL(38,2),
+    relleno_densidad DECIMAL(38,2) NOT NULL,
     FOREIGN KEY (relleno_material_codigo) REFERENCES GDDIENTOS.Material(material_codigo)
 );
 GO
@@ -616,6 +616,7 @@ BEGIN
         AND Ms.Material_Nombre = Mt.material_nombre
     GROUP BY Compra_Numero, material_codigo, Detalle_Compra_Precio,
         Detalle_Compra_Cantidad, Detalle_Compra_SubTotal
+    HAVING compra_numero IS NOT NULL
     ;
 END
 GO
