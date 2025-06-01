@@ -238,7 +238,7 @@ CREATE TABLE GDDIENTOS.Relleno (
 GO
 
 
-CREATE PROCEDURE migrar_provincia
+CREATE OR ALTER PROCEDURE migrar_provincia
 AS 
 BEGIN
     SET NOCOUNT ON;
@@ -269,7 +269,7 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE migrar_localidad
+CREATE OR ALTER PROCEDURE migrar_localidad
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -306,7 +306,7 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE migrar_clientes
+CREATE OR ALTER PROCEDURE migrar_clientes
 AS
 BEGIN
     SET NOCOUNT ON
@@ -331,7 +331,7 @@ END
 
 GO
 
-CREATE PROCEDURE migrar_sucursal
+CREATE OR ALTER PROCEDURE migrar_sucursal
 AS
 BEGIN
     SET NOCOUNT ON
@@ -352,7 +352,7 @@ END
 
 GO
 
-CREATE PROCEDURE migrar_estado
+CREATE OR ALTER PROCEDURE migrar_estado
 AS
 BEGIN
     SET NOCOUNT ON
@@ -368,7 +368,7 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE migrar_pedido
+CREATE OR ALTER PROCEDURE migrar_pedido
 AS
 BEGIN
     SET NOCOUNT ON
@@ -388,7 +388,7 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE migrar_pedido_cancelacion
+CREATE OR ALTER PROCEDURE migrar_pedido_cancelacion
 AS
 BEGIN
     SET NOCOUNT ON
@@ -403,7 +403,7 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE migrar_factura
+CREATE OR ALTER PROCEDURE migrar_factura
 AS
 BEGIN
 SET NOCOUNT ON
@@ -422,7 +422,7 @@ SET NOCOUNT ON
 END
 GO
 
-CREATE PROCEDURE migrar_envio
+CREATE OR ALTER PROCEDURE migrar_envio
 AS
 BEGIN
     SET NOCOUNT ON
@@ -441,7 +441,7 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE migrar_medida
+CREATE OR ALTER PROCEDURE migrar_medida
 AS
 BEGIN
     SET NOCOUNT ON
@@ -458,7 +458,7 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE migrar_sillon_modelo
+CREATE OR ALTER PROCEDURE migrar_sillon_modelo
 AS
 BEGIN
     SET NOCOUNT ON
@@ -475,7 +475,7 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE migrar_sillon_modelo
+CREATE OR ALTER PROCEDURE migrar_sillon
 AS
 BEGIN
     SET NOCOUNT ON
@@ -494,7 +494,7 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE migrar_item_pedido
+CREATE OR ALTER PROCEDURE migrar_item_pedido
 AS
 BEGIN
     SET NOCOUNT ON
@@ -512,7 +512,7 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE migrar_item_factura
+CREATE OR ALTER PROCEDURE migrar_item_factura
 AS
 BEGIN
     SET NOCOUNT ON
@@ -523,15 +523,15 @@ BEGIN
         Detalle_Factura_Cantidad, Detalle_Factura_SubTotal 
     FROM gd_esquema.Maestra 
     JOIN GDDIENTOS.Item_Pedido ON item_pedido_codigo_pedido = pedido_numero
-        AND item_pedido_precio_unitario = item_factura_precio_unitario
-        AND item_pedido_cantidad = item_factura_cantidad
+        AND item_pedido_precio_unitario = detalle_factura_precio
+        AND item_pedido_cantidad = detalle_factura_cantidad
     GROUP BY factura_numero, item_pedido_codigo, Detalle_Factura_Precio,
         Detalle_Factura_Cantidad, Detalle_Factura_SubTotal
     ;
 END
 GO
 
-CREATE PROCEDURE migrar_proveedor
+CREATE OR ALTER PROCEDURE migrar_proveedor
 AS
 BEGIN
     SET NOCOUNT ON
@@ -552,7 +552,7 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE migrar_compra
+CREATE OR ALTER PROCEDURE migrar_compra
 AS
 BEGIN 
     SET NOCOUNT ON
@@ -561,16 +561,16 @@ BEGIN
         compra_proveedor, compra_fecha, compra_total)
     SELECT Compra_Numero, Sucursal_NroSucursal, proveedor_codigo,
         Compra_Fecha, Compra_Total
-    FROM gd_esquema.Maestra M
+    FROM gd_esquema.Maestra Ms
     JOIN GDDIENTOS.Proveedor P
-        ON M.proveedor_cuit+M.proveedor_razonSocial=P.proveedor_cuit+P.proveedor_razonSocial
+        ON Ms.proveedor_cuit+Ms.proveedor_razonSocial=P.proveedor_cuit+P.proveedor_razonSocial
     GROUP BY Compra_Numero, Sucursal_NroSucursal, proveedor_codigo,
         Compra_Fecha, Compra_Total
     ;
 END
 GO
 
-CREATE PROCEDURE migrar_tipo_material
+CREATE OR ALTER PROCEDURE migrar_tipo_material
 AS
 BEGIN
     SET NOCOUNT ON
@@ -586,7 +586,7 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE migrar_tipo_material
+CREATE OR ALTER PROCEDURE migrar_material
 AS
 BEGIN
     SET NOCOUNT ON
@@ -601,11 +601,10 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE migrar_item_compra
+CREATE OR ALTER PROCEDURE migrar_item_compra
 AS
 BEGIN
     SET NOCOUNT ON
-
 
     INSERT INTO GDDIENTOS.Item_Compra(item_compra_codigo_compra, item_compra_material,
         item_compra_precio_unitario, item_compra_cantidad, item_compra_subtotal)
@@ -621,7 +620,7 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE migrar_sillon_material
+CREATE OR ALTER PROCEDURE migrar_sillon_material
 AS
 BEGIN
     SET NOCOUNT ON
@@ -633,11 +632,12 @@ BEGIN
     JOIN GDDIENTOS.Material Mt ON tipo_material_codigo = Mt.material_tipo
         AND Ms.Material_Nombre = Mt.material_nombre
     GROUP BY sillon_codigo, material_codigo, Ms.Material_Precio
+    HAVING sillon_codigo IS NOT NULL
     ;
 END
 GO
 
-CREATE PROCEDURE migrar_tela
+CREATE OR ALTER PROCEDURE migrar_tela
 AS
 BEGIN
     SET NOCOUNT ON
@@ -652,7 +652,7 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE migrar_madera
+CREATE OR ALTER PROCEDURE migrar_madera
 AS
 BEGIN
     SET NOCOUNT ON
@@ -668,7 +668,7 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE migrar_relleno
+CREATE OR ALTER PROCEDURE migrar_relleno
 AS
 BEGIN
     SET NOCOUNT ON
@@ -681,3 +681,45 @@ BEGIN
     ;
 END
 GO
+
+CREATE OR ALTER PROCEDURE migrar_todo
+AS
+BEGIN
+    BEGIN TRY
+        BEGIN TRANSACTION;
+
+        EXEC migrar_provincia;
+        EXEC migrar_localidad;
+        EXEC migrar_clientes;
+        EXEC migrar_sucursal;
+        EXEC migrar_estado;
+        EXEC migrar_pedido;
+        EXEC migrar_pedido_cancelacion;
+        EXEC migrar_factura;
+        EXEC migrar_envio;
+        EXEC migrar_medida;
+        EXEC migrar_sillon_modelo;
+        EXEC migrar_sillon;
+        EXEC migrar_item_pedido;
+        EXEC migrar_item_factura;
+        EXEC migrar_proveedor;
+        EXEC migrar_compra;
+        EXEC migrar_tipo_material;
+        EXEC migrar_material;
+        EXEC migrar_item_compra;
+        EXEC migrar_sillon_material;
+        EXEC migrar_tela;
+        EXEC migrar_madera;
+        EXEC migrar_relleno;
+
+        COMMIT TRANSACTION;
+        PRINT 'Migracion completa.';
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRANSACTION;
+        PRINT 'Error: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+GO
+
+EXEC migrar_todo;
